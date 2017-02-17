@@ -25,6 +25,16 @@ namespace Apps.Web.Areas.LianTong.Controllers
         private LianTong_ProjectContractsBLL m_BLL = new LianTong_ProjectContractsBLL();
         private SysStructBLL StructBLL = new SysStructBLL();
         ValidationErrors errors = new ValidationErrors();
+        Dictionary<string, string> dic = new Dictionary<string, string>();
+
+        public LianTong_ContractsProcessController() {
+            dic.Add("1", "等待送审");
+            dic.Add("2", "等待补全");
+            dic.Add("3", "等待审订");
+            dic.Add("4", "等待开票");
+            dic.Add("5", "等待回款");
+            dic.Add("6", "已完结");
+        }
 
         /// <summary>
         /// 列表
@@ -142,6 +152,7 @@ namespace Apps.Web.Areas.LianTong.Controllers
         {
             if (!string.IsNullOrWhiteSpace(Id))
             {
+                
                 LianTong_ProjectContractsModel UpModel = m_BLL.m_Rep.Find(Convert.ToInt32(Id));
                 int nextStep = Convert.ToInt32(UpModel.history) + 1;
                 if (nextStep > Convert.ToInt32(FlowLianTongContracts.完结.GetInt()))
@@ -149,6 +160,7 @@ namespace Apps.Web.Areas.LianTong.Controllers
                     return Json(JsonHandler.CreateMessage(0, Resource.CheckFail + "合同已完结"));
                 }
                 UpModel.history = nextStep.ToString();
+                UpModel.status = dic[UpModel.history];
                 if (m_BLL.m_Rep.Update(UpModel))
                 {
                     LogHandler.WriteServiceLog(GetUserId(), "Id:" + Id, "成功", "审核", "合同流程");
