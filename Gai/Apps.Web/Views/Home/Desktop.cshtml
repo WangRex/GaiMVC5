@@ -195,19 +195,19 @@
         }, "json");
     }
     function Load_NoticePart() {
-        //$.post("../Home/GetPartDataByNotice", function (data) { $("#noticePartContent").html(data); }, "json");
+        $.post("../Home/GetPartDataByNotice", function (data) { $("#noticePartContent").html(data); }, "json");
     }
     function Load_MyJobPart() {
-        //$.post("../Home/Desktop_MyJobPart", function (data) {
-        //    var str = "";
-        //    str = str + "<table style=\"width:100%\">";
-        //    for (var i = 0; i < data.rows.length;i++)
-        //    {
-        //        str = str + "<tr style='height:33px;line-height:33px; padding:5px;'><td>" + getFlowLevel(data.rows[i].FormLevel) + "&nbsp;【" + data.rows[i].contractNum + "-" + data.rows[i].CurrentStep + "】【&nbsp;期限：" + data.rows[i].validDate + "】</a></td><td class=\"color-black\" style=\"width:75px\">[" + data.rows[i].Title + "]</td></tr>";
-        //    }
-        //    str = str + "</table>";
-        //    $("#myJobPartContent").html(str);
-        //}, "json");
+        $.post("../Home/Desktop_MyJobPart", function (data) {
+            var str = "";
+            str = str + "<table style=\"width:100%\">";
+            for (var i = 0; i < data.rows.length;i++)
+            {
+                str = str + "<tr style='height:33px;line-height:33px; padding:5px;'><td>" + getFlowLevel(data.rows[i].FormLevel) + "&nbsp;【" + data.rows[i].contractNum + "-" + data.rows[i].CurrentStep + "】【&nbsp;期限：" + data.rows[i].validDate + "】</a></td><td class=\"color-black\" style=\"width:75px\">[" + data.rows[i].Title + "]</td></tr>";
+            }
+            str = str + "</table>";
+            $("#myJobPartContent").html(str);
+        }, "json");
 
     }
     function getFlowLevel(value)
@@ -341,8 +341,8 @@
         $("#shortcutPart,#noticePart,#dataPart").css("left", 0);
         $("#myJobPart,#notePart").css("left", ddw / 2 + 7);
         $("#shortcutPart").css("top", 0);
-        $("#notePart,#dataPart").css("top", ddh + 7);
-        $("#noticePart,#myJobPart").css("top", _windowHeight-400);
+        $("#noticePart,#myJobPart").css("top", ddh + 7);
+        $("#notePart,#dataPart").css("top", _windowHeight - 400);
     }
 </script>
 <div id="modalwindowArticle" class="easyui-window" data-options="modal:true,closed:true,minimizable:false,shadow:false"></div>
@@ -384,7 +384,7 @@
                 <div id="shortcutPartContent" class="panel-body ddcontent" style="border: 0;width:100%">
                 </div>
             </div>
-            <div id="noticePart" class="easyui-draggable" data-options="handle:'#noticeTitle'" style="display: none;">
+            <div id="noticePart" class="easyui-draggable" data-options="handle:'#noticeTitle'">
                 <div id="noticeTitle" class="panel-header" style="border: 0">
                     <div class="panel-title" style="">
                         <span class="fa fa-bullhorn"></span>&nbsp;&nbsp;最新公告(Top 6)
@@ -398,7 +398,7 @@
                     
                 </div>
             </div>
-            <div id="myJobPart" class="easyui-draggable" data-options="handle:'#title5'" style="display: none;">
+            <div id="myJobPart" class="easyui-draggable" data-options="handle:'#title5'">
                 <div id="title5" class="panel-header" style="border: 0">
                     <div class="panel-title" style="">
                         <span class="fa fa-tasks"></span>&nbsp;&nbsp;我的批阅(Top 6)
@@ -464,7 +464,7 @@
 <script id="ContractCnt-template" type="text/html">
     <table style="width:100%;">
         <tr>
-            <td style="width:14%">
+            <td style="width:12.5%">
                 <div style="width:95%;">
                     <a href="javascript:;" class="tile-button btn bg-red" title="">
                         <div class="tile-content-wrapper">
@@ -484,7 +484,27 @@
                     </a>
                 </div>
             </td>
-            <td style="width:14%">
+            <td style="width:12.5%">
+                <div style="width:95%;">
+                    <a href="javascript:;" class="tile-button btn bg-red" title="">
+                        <div class="tile-content-wrapper">
+                            <i class="glyph-icon fa fa-tasks"></i>
+                            <div class="tile-content">
+                                <span></span>
+                                {{ConnectWait}}
+                            </div>
+                            <small>
+                                <i class="glyph-icon fa fa-pagelines"></i>
+                                等待关联
+                            </small>
+                        </div>
+                        <div class="tile-footer">
+
+                        </div>
+                    </a>
+                </div>
+            </td>
+            <td style="width:12.5%">
                 <div style="width:95%;">
                     <a href="javascript:;" class="tile-button btn bg-green" title="">
                         <div class="tile-content-wrapper">
@@ -504,7 +524,7 @@
                     </a>
                 </div>
             </td>
-            <td style="width:14%">
+            <td style="width:12.5%">
                 <div style="width:95%;">
                     <a href="javascript:;" class="tile-button btn bg-blue-alt" title="">
                         <div class="tile-content-wrapper">
@@ -524,7 +544,7 @@
                     </a>
                 </div>
             </td>
-            <td style="width:14%">
+            <td style="width:12.5%">
                 <div style="width:95%;">
                     <a href="javascript:;" class="tile-button btn bg-azure" title="">
                         <div class="tile-content-wrapper">
@@ -544,7 +564,7 @@
                     </a>
                 </div>
             </td>
-            <td style="width:14%">
+            <td style="width:12.5%">
                 <div style="width:95%;">
                     <a href="javascript:;" class="tile-button btn bg-red" title="">
                         <div class="tile-content-wrapper">
@@ -564,7 +584,7 @@
                     </a>
                 </div>
             </td>
-            <td style="width:14%">
+            <td style="width:12.5%">
                 <div style="width:95%;">
                     <a href="javascript:;" class="tile-button btn bg-red" title="">
                         <div class="tile-content-wrapper">
@@ -584,7 +604,7 @@
                     </a>
                 </div>
             </td>
-            <td style="width:14%">
+            <td style="width:12.5%">
                 <div style="width:95%;">
                     <a href="javascript:;" class="tile-button btn bg-red" title="">
                         <div class="tile-content-wrapper">
