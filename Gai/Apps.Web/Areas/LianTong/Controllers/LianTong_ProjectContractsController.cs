@@ -210,11 +210,12 @@ namespace Apps.Web.Areas.LianTong.Controllers
         {
             Account _Account = (Account)Session["Account"];
             string roles = _Account.RoleName;
+            string DepId = _Account.DepId;
             if (null == roles || roles.Equals("[超级管理员]") || roles.Equals("[工程管理部]") || roles.Equals("[公司领导]"))
             {
-                roles = string.Empty;
+                DepId = string.Empty;
             }
-            return Json(m_BLL.ContractsCnt(roles));
+            return Json(m_BLL.ContractsCnt(DepId));
         }
         #endregion
 
