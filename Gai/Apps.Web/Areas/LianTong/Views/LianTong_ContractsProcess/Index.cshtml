@@ -73,9 +73,9 @@
                 { field: 'viePrice', title: '@Html.LabelFor(model => model.viePrice)', width: 80 },
                 { field: 'taxIncrease', title: '@Html.LabelFor(model => model.taxIncrease)', width: 80 },
                 { field: 'taxPrice', title: '@Html.LabelFor(model => model.taxPrice)', width: 80 },
-                { field: 'invoiceNum', title: '@Html.LabelFor(model => model.invoiceNum)', width: 80 },
-                { field: 'invoiceDate', title: '@Html.LabelFor(model => model.invoiceDate)', width: 100 },
-                { field: 'validDate', title: '@Html.LabelFor(model => model.validDate)', width: 100},
+                { field: 'invoiceNum', title: '@Html.LabelFor(model => model.invoiceNum)', width: 80, editor: { type: 'validatebox' } },
+                { field: 'invoiceDate', title: '@Html.LabelFor(model => model.invoiceDate)', width: 100, editor: { type: 'datebox' } },
+                { field: 'validDate', title: '@Html.LabelFor(model => model.validDate)', width: 100, editor: { type: 'datebox' } },
                 { field: 'departmentName', title: '@Html.LabelFor(model => model.departmentName)', width: 80 }
             ]],
             toolbar: [
