@@ -177,7 +177,13 @@ namespace Apps.Web.Areas.LianTong.Controllers
             }
         }
 
-
+        #region 集成中心合同金额数统计
+        [HttpPost]
+        public ActionResult ContratcMoneyCnt()
+        {
+            return Json(m_BLL.ContratcMoneyCnt());
+        }
+        #endregion
 
     }
 }
