@@ -229,45 +229,92 @@
         return _close;
     }
     function Load_DataPart() {
-        $.post("/LianTong/LianTong_ProjectContracts/outlineCostReport", function (data) {
-            var list = [];
-            var depList = [];
-            $.each(data, function (key, value) {
-                if (key != "TotalC") {
-                    var obj = {};
-                    obj.value = value;
-                    obj.name = key;
-                    list.push(obj);
-                    depList.push(name);
-                }
-            });
-            var option = {
-                tooltip: {
-                    trigger: 'item',
-                    formatter: "{a} <br/>{b}: {c} ({d}%)"
-                },
-                title: {
-                    text: '工程概算费统计' + data.TotalC + ' 元'
-                },
-                legend: {
-                    orient: 'vertical',
-                    x: 'left',
-                    data: depList
-                },
-                series: [
-                    {
-                        name: '工程概算费统计',
-                        type: 'pie',
-                        data: list
+        if("系统集成中心" == "@ViewBag.DepName") {
+            $.post("/LianTong/LianTong_SystemCenter/ContratcMoneyCnt", function (data) {
+                var list = [];
+                var equipmentCost = { "equipmentCost": data.equipmentCost };
+                equipmentCost.name = "设备";
+                equipmentCost.value = data.equipmentCost;
+                var projectCost = { "projectCost": data.projectCost };
+                projectCost.name = "施工";
+                projectCost.value = data.projectCost;
+                var Profit = { "Profit": data.Profit };
+                Profit.name = "利润";
+                Profit.value = data.Profit;
+
+                list.push(equipmentCost);
+                list.push(projectCost);
+                list.push(Profit);
+                var option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b}: {c} ({d}%)"
+                    },
+                    title: {
+                        x: "center",
+                        text: '合同金额' + data.contractCost + ' 元'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        x: 'left',
+                        data: ["设备", "施工", "利润"]
+                    },
+                    series: [
+                        {
+                            name: '合同金额占比',
+                            type: 'pie',
+                            data: list
+                        }
+                    ]
+                };
+
+                $("#dataPartContent").attr("style", "border:0px;width:" + (SetGridWidthSub(10) / 2 - 40) + "px;height:320px;");
+                var myChart = echarts.init(document.getElementById('dataPartContent'), "shine");
+
+                myChart.setOption(option);
+            }, "json");
+        } else {
+            $.post("/LianTong/LianTong_ProjectContracts/outlineCostReport", function (data) {
+                var list = [];
+                var depList = [];
+                $.each(data, function (key, value) {
+                    if (key != "TotalC") {
+                        var obj = {};
+                        obj.value = value;
+                        obj.name = key;
+                        list.push(obj);
+                        depList.push(key);
                     }
-                ]
-            };
+                });
+                var option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b}: {c} ({d}%)"
+                    },
+                    title: {
+                        x: 'center',
+                        text: '工程概算费统计' + data.TotalC + ' 元'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        x: 'left',
+                        data: depList
+                    },
+                    series: [
+                        {
+                            name: '工程概算费统计',
+                            type: 'pie',
+                            data: list
+                        }
+                    ]
+                };
 
-            $("#dataPartContent").attr("style", "border:0px;width:" + (SetGridWidthSub(10) / 2 - 40) + "px;height:320px;");
-            var myChart = echarts.init(document.getElementById('dataPartContent'), "shine");
+                $("#dataPartContent").attr("style", "border:0px;width:" + (SetGridWidthSub(10) / 2 - 40) + "px;height:320px;");
+                var myChart = echarts.init(document.getElementById('dataPartContent'), "shine");
 
-            myChart.setOption(option);
-        }, "json");
+                myChart.setOption(option);
+            }, "json");
+        }
     }
     function Load_NotePart() { 
         $.post("/LianTong/LianTong_ProjectContracts/contractsCNTJsonList", function (data) {
@@ -341,8 +388,8 @@
         $("#shortcutPart,#noticePart,#dataPart").css("left", 0);
         $("#myJobPart,#notePart").css("left", ddw / 2 + 7);
         $("#shortcutPart").css("top", 0);
-        $("#noticePart,#myJobPart").css("top", ddh + 7);
-        $("#notePart,#dataPart").css("top", _windowHeight - 400);
+        $("#notePart,#dataPart").css("top", ddh + 7);
+        $("#noticePart,#myJobPart").css("top", _windowHeight - 180);
     }
 </script>
 <div id="modalwindowArticle" class="easyui-window" data-options="modal:true,closed:true,minimizable:false,shadow:false"></div>
@@ -384,34 +431,6 @@
                 <div id="shortcutPartContent" class="panel-body ddcontent" style="border: 0;width:100%">
                 </div>
             </div>
-            <div id="noticePart" class="easyui-draggable" data-options="handle:'#noticeTitle'">
-                <div id="noticeTitle" class="panel-header" style="border: 0">
-                    <div class="panel-title" style="">
-                        <span class="fa fa-bullhorn"></span>&nbsp;&nbsp;最新公告(Top 6)
-                    </div>
-                    <div class="panel-tool">
-                        <a href="javascript:promptValue('noticePart')" class="panel-tool-max"></a><a href="javascript:void(0)"
-                                                                                                     class="panel-tool-close"></a>
-                    </div>
-                </div>
-                <div id="noticePartContent" class="panel-body ddcontent" style="border: 0">
-                    
-                </div>
-            </div>
-            <div id="myJobPart" class="easyui-draggable" data-options="handle:'#title5'">
-                <div id="title5" class="panel-header" style="border: 0">
-                    <div class="panel-title" style="">
-                        <span class="fa fa-tasks"></span>&nbsp;&nbsp;我的批阅(Top 6)
-                    </div>
-                    <div class="panel-tool">
-                        <a href="javascript:promptValue('myJobPart')" class="panel-tool-max"></a><a href="javascript:void(0)"
-                                                                                                    class="panel-tool-close"></a>
-                    </div>
-                </div>
-                <div id="myJobPartContent" class="panel-body ddcontent" style="border: 0">
-                    <table id="List"></table>
-                </div>
-            </div>
             <div id="dataPart" class="easyui-draggable" data-options="handle:'#title6'">
                 <div id="title6" class="panel-header" style="border: 0">
                     <div class="panel-title" style="">
@@ -440,6 +459,34 @@
                 </div>
                 <div id="notePartContent" class="panel-body ddcontent" style="border: 0">
                     
+                </div>
+            </div>
+            <div id="noticePart" class="easyui-draggable" data-options="handle:'#noticeTitle'">
+                <div id="noticeTitle" class="panel-header" style="border: 0">
+                    <div class="panel-title" style="">
+                        <span class="fa fa-bullhorn"></span>&nbsp;&nbsp;最新公告(Top 6)
+                    </div>
+                    <div class="panel-tool">
+                        <a href="javascript:promptValue('noticePart')" class="panel-tool-max"></a><a href="javascript:void(0)"
+                                                                                                     class="panel-tool-close"></a>
+                    </div>
+                </div>
+                <div id="noticePartContent" class="panel-body ddcontent" style="border: 0">
+
+                </div>
+            </div>
+            <div id="myJobPart" class="easyui-draggable" data-options="handle:'#title5'">
+                <div id="title5" class="panel-header" style="border: 0">
+                    <div class="panel-title" style="">
+                        <span class="fa fa-tasks"></span>&nbsp;&nbsp;我的批阅(Top 6)
+                    </div>
+                    <div class="panel-tool">
+                        <a href="javascript:promptValue('myJobPart')" class="panel-tool-max"></a><a href="javascript:void(0)"
+                                                                                                    class="panel-tool-close"></a>
+                    </div>
+                </div>
+                <div id="myJobPartContent" class="panel-body ddcontent" style="border: 0">
+                    <table id="List"></table>
                 </div>
             </div>
             <script id="JsSet">
@@ -627,6 +674,7 @@
         </tr>
     </table>
 </script>
+
 <script id="notePartContent-template" type="text/html">
     <div style="min-width:400px; line-height:30px;">
         <p>新建合同</p>
