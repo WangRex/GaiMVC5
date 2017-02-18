@@ -227,10 +227,6 @@ namespace Apps.Web.Controllers
 
         #endregion
 
-
-
-
-
         #region 我的资料
         public ActionResult Info()
         {
@@ -276,6 +272,9 @@ namespace Apps.Web.Controllers
             string userId = GetUserId();
             //SysUserConfig ss = webPartBLL.m_Rep.Find(a => a.Name == "webpart" && a.UserId == userId);
             SysUserConfig ss = webPartBLL.m_Rep.Find(a => a.UserId == userId && a.State == "true");
+            Account account = new Account();
+            account = (Account)Session["Account"];
+            ViewBag.DepName = structBLL.m_Rep.Find(Convert.ToInt32(account.DepId)).Name;
             if (ss != null)
             {
                 ViewBag.Value = ss.Value;
