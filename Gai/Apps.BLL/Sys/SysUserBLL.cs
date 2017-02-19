@@ -68,14 +68,7 @@ namespace Apps.BLL.Sys
             }
             if (pager.order == "desc")
             {
-                if (pager.order == "UserName")
-                {
-                    query = list.OrderBy(c => c.UserName).Skip((pager.page - 1) * pager.rows).Take(pager.rows).ToList();
-                }
-                else//createtime
-                {
-                    query = list.OrderBy(c => c.CreateTime).Skip((pager.page - 1) * pager.rows).Take(pager.rows).ToList();
-                }
+                query = list.OrderBy(c => c.Id).Skip((pager.page - 1) * pager.rows).Take(pager.rows).ToList();
             }
             else
             {
@@ -83,9 +76,9 @@ namespace Apps.BLL.Sys
                 {
                     query = list.OrderByDescending(c => c.UserName).Skip((pager.page - 1) * pager.rows).Take(pager.rows).ToList();
                 }
-                else//createtime
+                else
                 {
-                    query = list.OrderByDescending(c => c.CreateTime).Skip((pager.page - 1) * pager.rows).Take(pager.rows).ToList();
+                    query = list.OrderByDescending(c => c.Id).Skip((pager.page - 1) * pager.rows).Take(pager.rows).ToList();
                 }
             }
             return query;
