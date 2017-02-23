@@ -62,16 +62,15 @@ namespace Apps.BLL.LianTong
             //获取实体列表
             LianTong_ContractsCntViewModels refModels = new LianTong_ContractsCntViewModels();
             IQueryable<LianTong_ProjectContractsModel> _LianTong_Contracts = m_Rep.FindList();
-            if (!string.IsNullOrEmpty(department)) _LianTong_Contracts = _LianTong_Contracts.Where(cm => cm.department == department);
 
             refModels.NewContracts = _LianTong_Contracts.Where(cm => cm.history == null).Count();
-            refModels.ConnectWait = _LianTong_Contracts.Where(cm => cm.history == null).Count();
-            refModels.ApproveWait = _LianTong_Contracts.Where(cm => cm.history == "1").Count();
-            refModels.FullWait = _LianTong_Contracts.Where(cm => cm.history == "2").Count();
-            refModels.CheckWait = _LianTong_Contracts.Where(cm => cm.history == "3").Count();
-            refModels.InvoiceWait = _LianTong_Contracts.Where(cm => cm.history == "4").Count();
-            refModels.PaymentsWait = _LianTong_Contracts.Where(cm => cm.history == "5").Count();
-            refModels.OverContracts = _LianTong_Contracts.Where(cm => cm.history == "6").Count();
+            refModels.ConnectWait = _LianTong_Contracts.Where(cm => cm.history == null && (string.IsNullOrEmpty(department) || cm.department == department)).Count();
+            refModels.ApproveWait = _LianTong_Contracts.Where(cm => cm.history == "1" && (string.IsNullOrEmpty(department) || cm.department == department)).Count();
+            refModels.FullWait = _LianTong_Contracts.Where(cm => cm.history == "2" && (string.IsNullOrEmpty(department) || cm.department == department)).Count();
+            refModels.CheckWait = _LianTong_Contracts.Where(cm => cm.history == "3" && (string.IsNullOrEmpty(department) || cm.department == department)).Count();
+            refModels.InvoiceWait = _LianTong_Contracts.Where(cm => cm.history == "4" && (string.IsNullOrEmpty(department) || cm.department == department)).Count();
+            refModels.PaymentsWait = _LianTong_Contracts.Where(cm => cm.history == "5" && (string.IsNullOrEmpty(department) || cm.department == department)).Count();
+            refModels.OverContracts = _LianTong_Contracts.Where(cm => cm.history == "6" && (string.IsNullOrEmpty(department) || cm.department == department)).Count();
             return refModels;
         }
 
