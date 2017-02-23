@@ -73,6 +73,9 @@ namespace Apps.Models.LianTong
         [Display(Name = "客户经理电话")]
         public string AccountManagerTel { get; set; }
 
+        [Display(Name = "联通公司客户")]
+        public string UnicomAccount { get; set; }
+
         [Display(Name = "联通公司系统支持")]
         public string SystemSupport { get; set; }
 
