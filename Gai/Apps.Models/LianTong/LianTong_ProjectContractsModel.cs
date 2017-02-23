@@ -18,7 +18,7 @@ namespace Apps.Models.LianTong
         [Display(Name = "设计编号")]
         public string designNum { get; set; }
 
-        [Display(Name = "项目编号")]
+        [Display(Name = "工程编号")]
         public string projectNum { get; set; }
 
         [Display(Name = "合同编号")]
