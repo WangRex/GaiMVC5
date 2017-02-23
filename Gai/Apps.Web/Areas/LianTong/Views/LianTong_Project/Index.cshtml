@@ -11,8 +11,19 @@
 }
 
 <div class="mvctool">
-    <input id="txtQuery" type="text" class="searchText" />
-    @Html.ToolButton("btnQuery", "fa fa-search", "按部门查询", ref perm, "Query", true)
+    <div>
+        <input type="hidden" id="DepId" />
+        部门<input class="easyui-combotree" id="structTree" style="width:150px;height:28px;">
+        完成情况<select id="overStatusSelect" class="easyui-combobox" style="width:200px;">
+            <option value="">--请选择--</option>
+            <option value="未完成">未完成</option>
+            <option value="完成">完成</option>
+        </select>
+        专业<input id="projectPro" class="easyui-textbox" style="width:150px;height:28px;">
+        管理员<input id="admin" class="easyui-textbox" style="width:150px;height:28px;">
+        负责人<input id="projectManagement" class="easyui-textbox" style="width:150px;height:28px;">
+    </div>
+    @Html.ToolButton("btnQuery", "fa fa-search", "查询", ref perm, "Query", true)
     @Html.ToolButton("btnAdd", "fa fa-plus", "添加", ref perm, "Create", true)
     @Html.ToolButton("btnSave", "fa fa-save", Resource.Save, ref perm, "Save", true)
     @Html.ToolButton("btnDelete", "fa fa-trash", Resource.Delete, ref perm, "Delete", true)
@@ -21,6 +32,29 @@
 <table id="grid_list"></table>
 <div id="Pager"></div>
 <script type="text/javascript">
+    function SetPosTree(depId, refFlag) {
+        $('#posTree').combotree({
+            url: '/SysPosition/GetPosListByComTree?depId=' + depId
+                 , onSelect: function (node) {
+                     $("#PosId").val(node.id);
+                 }, onLoadSuccess: function (node, data) { //加载成功选择第一行
+
+                 }
+        });
+    }
+    //分类combotree
+    $('#structTree').combotree({
+        url: '/SysStruct/GetListByComTree?id=root'
+        , onSelect: function (node) {
+            $("#DepId").val(node.id);
+            $("#PosId").val("");
+            $('#posTree').combotree('setValue', "");
+            SetPosTree(node.id)
+        }, onLoadSuccess: function (node, data) { //加载成功选择第一行
+
+            SetPosTree($("#DepId").val(), true);
+        }
+    });
     var overStatusCombList = [{ "value": "未完成", "text": "未完成" }, { "value": "完成", "text": "完成" }];
     var projectClassCombList = [{ "value": "设备工程", "text": "设备工程" }, { "value": "线路工程", "text": "线路工程" }, { "value": "转化工程", "text": "转化工程" }, { "value": "驻地网工程", "text": "驻地网工程" }, { "value": "装维工程", "text": "装维工程" }, { "value": "市政工程", "text": "市政工程" }, { "value": "外揽工程", "text": "外揽工程" }, { "value": "移动工程", "text": "移动工程" }];
     var projectProCombList = [{ "value": "---设备工程---", "text": "---设备工程---" }, { "value": "电源专业工程", "text": "电源专业工程" }, { "value": "大客户传输工程", "text": "大客户传输工程" }, { "value": "集客工程", "text": "集客工程" }, { "value": "---线路工程---", "text": "---线路工程---" }, { "value": "主干光缆工程", "text": "主干光缆工程" }, { "value": "配线光缆工程", "text": "配线光缆工程" }, { "value": "管道光缆工程", "text": "管道光缆工程" }, { "value": "--移动工程---", "text": "---移动工程---" }, { "value": "设备工程", "text": "设备工程" }, { "value": "线路工程", "text": "线路工程" }];
@@ -91,12 +125,12 @@
             ]],
             toolbar: [
                 {
-                text: '撤销', iconCls: 'fa fa-reply', handler: function () {
-                    editRow = undefined;
-                    $("#grid_list").datagrid('rejectChanges');
-                    $("#grid_list").datagrid('unselectAll');
-                }
-            },
+                    text: '撤销', iconCls: 'fa fa-reply', handler: function () {
+                        editRow = undefined;
+                        $("#grid_list").datagrid('rejectChanges');
+                        $("#grid_list").datagrid('unselectAll');
+                    }
+                },
             '-', {
                 text: '上移', iconCls: 'fa fa-arrow-up', handler: function () {
                     MoveUp();
@@ -193,8 +227,12 @@
     }
     $(function () {
         $("#btnQuery").click(function () {
-            var queryStr = $("#txtQuery").val();
-            $("#grid_list").datagrid("load", { queryStr: queryStr });
+            var DepId = $("#DepId").val();
+            var overStatus = $("#overStatusSelect").combobox('getValue');
+            var projectPro = $("#projectPro").val();
+            var admin = $("#admin").val();
+            var projectManagement = $("#projectManagement").val();
+            $("#grid_list").datagrid("load", { DepId: DepId, overStatus: overStatus, projectPro: projectPro, admin: admin, projectManagement: projectManagement });
         });
         $("#btnDelete").click(function () {
             var row = $('#grid_list').datagrid('getSelected');
@@ -206,8 +244,7 @@
                                 $("#grid_list").datagrid('load');
                                 $.messageBox5s('@Resource.Tip', data.message);
                             }
-                            else
-                            {
+                            else {
                                 $.messageBox5s('@Resource.Tip', data.message);
                             }
 
@@ -215,7 +252,7 @@
 
                     }
                 });
-            } else {$.messageBox5s('@Resource.Tip','@Resource.PlaseChooseToOperatingRecords'); }
+            } else { $.messageBox5s('@Resource.Tip', '@Resource.PlaseChooseToOperatingRecords'); }
         });
 
         $("#btnSave").click(function () {

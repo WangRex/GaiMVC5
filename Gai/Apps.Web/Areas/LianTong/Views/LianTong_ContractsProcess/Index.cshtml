@@ -11,6 +11,7 @@
     List<perm> perm = null;
 }
 <div class="mvctool">
+    @Html.ToolButton("btnQuery", "fa fa-search", "按部门查询", ref perm, "Query", true)
     @Html.ToolButton("btnSave", "fa fa-save", Resource.Save, ref perm, "Save", true)
     @Html.ToolButton("btnCheck", "fa  fa-check", Resource.Check, ref perm, "Allot", true)
     @Html.ToolButton("btnUnCheck", "fa  fa-ban", Resource.UnCheck, ref perm, "Rollback", true)
@@ -70,9 +71,9 @@
                 { field: 'subContractCompany', title: '@Html.LabelFor(model => model.subContractCompany)', width: 80, sortable: true, editor: { type: 'validatebox' } },
                 { field: 'subContractAdmin', title: '@Html.LabelFor(model => model.subContractAdmin)', width: 80, sortable: true, editor: { type: 'validatebox' } },
                 { field: 'subContractTel', title: '@Html.LabelFor(model => model.subContractTel)', width: 80, sortable: true, editor: { type: 'validatebox' } },
-                { field: 'viePrice', title: '@Html.LabelFor(model => model.viePrice)', width: 80 },
-                { field: 'taxIncrease', title: '@Html.LabelFor(model => model.taxIncrease)', width: 80 },
-                { field: 'taxPrice', title: '@Html.LabelFor(model => model.taxPrice)', width: 80 },
+                { field: 'viePrice', title: '@Html.LabelFor(model => model.viePrice)', width: 80, editor: { type: 'numberbox' } },
+                { field: 'taxIncrease', title: '@Html.LabelFor(model => model.taxIncrease)', width: 80, editor: { type: 'numberbox' } },
+                { field: 'taxPrice', title: '@Html.LabelFor(model => model.taxPrice)', width: 80, editor: { type: 'numberbox' } },
                 { field: 'invoiceNum', title: '@Html.LabelFor(model => model.invoiceNum)', width: 80, editor: { type: 'validatebox' } },
                 { field: 'invoiceDate', title: '@Html.LabelFor(model => model.invoiceDate)', width: 100, editor: { type: 'datebox' } },
                 { field: 'validDate', title: '@Html.LabelFor(model => model.validDate)', width: 100, editor: { type: 'datebox' } },

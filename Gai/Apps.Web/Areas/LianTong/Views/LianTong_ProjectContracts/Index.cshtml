@@ -41,6 +41,28 @@
             departmentCombList = data;
         }
     });
+    var projectClassCombList = [{ "value": "设备工程", "text": "设备工程" }, { "value": "线路工程", "text": "线路工程" }, { "value": "转化工程", "text": "转化工程" }, { "value": "驻地网工程", "text": "驻地网工程" }, { "value": "装维工程", "text": "装维工程" }, { "value": "市政工程", "text": "市政工程" }, { "value": "外揽工程", "text": "外揽工程" }, { "value": "移动工程", "text": "移动工程" }];
+    var projectProCombList = [{ "value": "---设备工程---", "text": "---设备工程---" }, { "value": "电源专业工程", "text": "电源专业工程" }, { "value": "大客户传输工程", "text": "大客户传输工程" }, { "value": "集客工程", "text": "集客工程" }, { "value": "---线路工程---", "text": "---线路工程---" }, { "value": "主干光缆工程", "text": "主干光缆工程" }, { "value": "配线光缆工程", "text": "配线光缆工程" }, { "value": "管道光缆工程", "text": "管道光缆工程" }, { "value": "--移动工程---", "text": "---移动工程---" }, { "value": "设备工程", "text": "设备工程" }, { "value": "线路工程", "text": "线路工程" }];
+    function unitformatterprojectClass(value, rowData, rowIndex) {
+        if (value == 0) {
+            return;
+        }
+        for (var i = 0; i < projectClassCombList.length; i++) {
+            if (projectClassCombList[i].value == value) {
+                return projectClassCombList[i].text;
+            }
+        }
+    };
+    function unitformatterprojectPro(value, rowData, rowIndex) {
+        if (value == 0) {
+            return;
+        }
+        for (var i = 0; i < projectProCombList.length; i++) {
+            if (projectProCombList[i].value == value) {
+                return projectProCombList[i].text;
+            }
+        }
+    };
     var editRow = undefined;
     $(function () {
         $('#grid_list').datagrid({
@@ -66,8 +88,8 @@
                 { field: 'orderNum', title: '@Html.LabelFor(model => model.orderNum)', width: 80, editor: { type: 'validatebox' } },
                 { field: 'contractCost', title: '@Html.LabelFor(model => model.contractCost)', width: 80, editor: { type: 'numberbox' } },
                 { field: 'ownerAdmin', title: '@Html.LabelFor(model => model.ownerAdmin)', width: 80, editor: { type: 'validatebox' } },
-                { field: 'projectClass1', title: '@Html.LabelFor(model => model.projectClass1)', width: 80, editor: { type: 'validatebox' } },
-                { field: 'projectClass2', title: '@Html.LabelFor(model => model.projectClass2)', width: 80, editor: { type: 'validatebox' } },
+                { field: 'projectClass1', title: '@Html.LabelFor(model => model.projectClass1)', width: 90, formatter: unitformatterprojectClass, editor: { type: 'combobox', options: { data: projectClassCombList, valueField: "value", textField: "text" } } },
+                { field: 'projectClass2', title: '@Html.LabelFor(model => model.projectClass2)', width: 120, formatter: unitformatterprojectPro, editor: { type: 'combobox', options: { data: projectProCombList, valueField: "value", textField: "text" } } },
                 { field: 'viePrice', title: '@Html.LabelFor(model => model.viePrice)', width: 80, editor: { type: 'numberbox' } },
                 { field: 'taxIncrease', title: '@Html.LabelFor(model => model.taxIncrease)', width: 80, editor: { type: 'numberbox' } },
                 { field: 'taxPrice', title: '@Html.LabelFor(model => model.taxPrice)', width: 80, editor: { type: 'numberbox' } },

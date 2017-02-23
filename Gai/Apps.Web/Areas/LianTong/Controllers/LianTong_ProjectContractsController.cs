@@ -24,11 +24,14 @@ namespace Apps.Web.Areas.LianTong.Controllers
         private LianTong_ProjectContractsBLL m_BLL = new LianTong_ProjectContractsBLL();
         private SysStructBLL StructBLL = new SysStructBLL();
         ValidationErrors errors = new ValidationErrors();
+
         [SupportFilter]
         public ActionResult Index()
         {
             return View();
         }
+
+        #region 获取合同列表
         //[SupportFilter(ActionName = "Index")]
         public JsonResult GetList(GridPager pager, string queryStr)
         {
@@ -39,10 +42,11 @@ namespace Apps.Web.Areas.LianTong.Controllers
             List<LianTong_ProjectContractsModel> list;
             if ("[超级管理员]".Equals(RoleName))
             {
-                list = m_BLL.m_Rep.FindPageList(ref pager, a => a.departmentName.Contains(queryStr)).ToList();
-            } else if ("*".Equals(QuaryCD))
+                list = m_BLL.m_Rep.FindPageList(ref pager, a => string.IsNullOrEmpty(a.history)).ToList();
+            }
+            else if ("[公司领导]".Equals(RoleName) || RoleName.Contains("[工程管理部]"))
             {
-                list = m_BLL.m_Rep.FindPageList(ref pager, a => a.departmentName.Contains(queryStr) && (a.history == null || a.history == string.Empty)).ToList();
+                list = m_BLL.m_Rep.FindPageList(ref pager, a => a.department.Equals(DepId) && (a.history == null || a.history == string.Empty)).ToList();
             }
             else
             {
@@ -57,9 +61,10 @@ namespace Apps.Web.Areas.LianTong.Controllers
             };
             return Json(json, JsonRequestBehavior.AllowGet);
         }
+        #endregion
 
         #region 分配工程页面跳转
-        [SupportFilter(ActionName = "Save")]
+        [SupportFilter(ActionName = "Index")]
         public ActionResult ProjectsBindingPage(string ContractsId)
         {
             ViewBag.ContractsId = ContractsId;
@@ -67,6 +72,7 @@ namespace Apps.Web.Areas.LianTong.Controllers
         }
         #endregion
 
+        #region 获取待关联工程集合
         //[SupportFilter(ActionName = "Allot")]
         public JsonResult GetTargetProjects()
         {
@@ -77,10 +83,6 @@ namespace Apps.Web.Areas.LianTong.Controllers
             if ("[超级管理员]".Equals(RoleName))
             {
                 list = _LianTong_Project.m_Rep.FindList(a => a.contractNum == null).ToList();
-            }
-            else if ("*".Equals(QuaryCD))
-            {
-                list = _LianTong_Project.m_Rep.FindList(a => a.contractNum == null || a.contractNum == string.Empty).ToList();
             }
             else
             {
@@ -106,9 +108,10 @@ namespace Apps.Web.Areas.LianTong.Controllers
             };
             return Json(jsonData);
         }
+        #endregion
 
         #region 关联工程
-        [SupportFilter(ActionName = "Save")]
+        //[SupportFilter(ActionName = "Save")]
         public JsonResult BindingProject(string ContractsId, string projectIds)
         {
             if (m_BLL.BindingProject(ContractsId, projectIds))
@@ -132,7 +135,6 @@ namespace Apps.Web.Areas.LianTong.Controllers
             string result = Request.Form[0];
 
             //后台拿到字符串时直接反序列化。根据需要自己处理
-            //var datagrid = JsonConvert.DeserializeObject<List<datagrid>>(result);
             List<LianTong_ProjectContractsModel> datagridList = new List<LianTong_ProjectContractsModel>();
             try
             { datagridList = JsonConvert.DeserializeObject<List<LianTong_ProjectContractsModel>>(result); }
@@ -161,7 +163,7 @@ namespace Apps.Web.Areas.LianTong.Controllers
                 }
                 else
                 {
-                    info.departmentName = StructBLL.m_Rep.Find(Convert.ToInt32 (info.department)).Name;
+                    info.departmentName = StructBLL.m_Rep.Find(Convert.ToInt32(info.department)).Name;
                     if (m_BLL.m_Rep.Create(info))
                     {
                         LogHandler.WriteServiceLog(GetUserId(), "Id:" + info.Id + ",contractNum:" + info.contractNum, "成功", "创建", "合同设置");
@@ -170,7 +172,7 @@ namespace Apps.Web.Areas.LianTong.Controllers
                     {
                         string ErrorCol = errors.Error;
                         LogHandler.WriteServiceLog(GetUserId(), "Id:" + info.Id + ",contractNum:" + info.contractNum + "," + ErrorCol, "失败", "创建", "合同设置");
-                        return Json(JsonHandler.CreateMessage(0, Resource.InsertFail + ErrorCol),JsonRequestBehavior.AllowGet);
+                        return Json(JsonHandler.CreateMessage(0, Resource.InsertFail + ErrorCol), JsonRequestBehavior.AllowGet);
                     }
                 }
             }
@@ -211,7 +213,7 @@ namespace Apps.Web.Areas.LianTong.Controllers
             Account _Account = (Account)Session["Account"];
             string roles = _Account.RoleName;
             string DepId = _Account.DepId;
-            if (null == roles || roles.Equals("[超级管理员]") || roles.Equals("[工程管理部]") || roles.Equals("[公司领导]"))
+            if (null == roles || roles.Equals("[超级管理员]") || roles.Equals("[公司领导]") || roles.Contains("[工程管理部]"))
             {
                 DepId = string.Empty;
             }
@@ -221,7 +223,8 @@ namespace Apps.Web.Areas.LianTong.Controllers
 
         #region 概算费
         [HttpPost]
-        public ActionResult outlineCostReport() {
+        public ActionResult outlineCostReport()
+        {
             return Json(m_BLL.outlineCostReport());
         }
         #endregion

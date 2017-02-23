@@ -26,7 +26,7 @@ namespace Apps.Web.Areas.LianTong.Controllers
         {
             if (string.IsNullOrEmpty(queryStr)) queryStr = "";
             List<LianTong_SystemCenterModel> list;
-            list = m_BLL.m_Rep.FindPageList(ref pager, a => a.leaderName.Contains(queryStr)||
+            list = m_BLL.m_Rep.FindPageList(ref pager, a => a.leaderName.Contains(queryStr) ||
             a.projectName.Contains(queryStr) ||
              a.projectAttribution.Contains(queryStr) ||
               a.AccountManager.Contains(queryStr) ||
@@ -117,7 +117,7 @@ namespace Apps.Web.Areas.LianTong.Controllers
                     {
                         string ErrorCol = errors.Error;
                         LogHandler.WriteServiceLog(GetUserId(), "Id:" + info.Id + ",projectName:" + info.projectName + "," + ErrorCol, "失败", "创建", "工程设置");
-                        return Json(JsonHandler.CreateMessage(0, Resource.InsertFail + ErrorCol),JsonRequestBehavior.AllowGet);
+                        return Json(JsonHandler.CreateMessage(0, Resource.InsertFail + ErrorCol), JsonRequestBehavior.AllowGet);
                     }
                 }
             }
@@ -150,11 +150,59 @@ namespace Apps.Web.Areas.LianTong.Controllers
         }
         #endregion
 
-        public ActionResult Details(string ContractsId)
+        #region 工程详情跳转页
+        public ActionResult Details(string ProjectId)
         {
-            ViewBag.ContractsId = ContractsId;
+            ViewBag.ProjectId = ProjectId;
             return View();
         }
+        #endregion
+
+        #region 工程详情
+        public JsonResult GetDetails(string ProjectId)
+        {
+            
+            LianTong_SystemCenterModel _LianTong_SystemCenterModel = m_BLL.m_Rep.Find(Convert.ToInt32(ProjectId));
+            var ProfitRate = "";
+            if(_LianTong_SystemCenterModel.contractCost != null && _LianTong_SystemCenterModel.contractCost != 0)
+            {
+                ProfitRate = ((((_LianTong_SystemCenterModel.contractCost == null ? 0 : _LianTong_SystemCenterModel.contractCost) - (_LianTong_SystemCenterModel.equipmentCost == null ? 0 : _LianTong_SystemCenterModel.equipmentCost) - (_LianTong_SystemCenterModel.projectCost == null ? 0 : _LianTong_SystemCenterModel.projectCost)) / (_LianTong_SystemCenterModel.contractCost == null ? 0 : _LianTong_SystemCenterModel.contractCost)) * 100).ToString();
+            }
+            
+            var json = new
+            {
+                Id = _LianTong_SystemCenterModel.Id,
+                leaderName = _LianTong_SystemCenterModel.leaderName,
+                projectName = _LianTong_SystemCenterModel.projectName,
+                projectAttribution = _LianTong_SystemCenterModel.projectAttribution,
+                projectArea = _LianTong_SystemCenterModel.projectArea,
+                projectType = _LianTong_SystemCenterModel.projectType,
+                AccountManager = _LianTong_SystemCenterModel.AccountManager,
+                AccountManagerTel = _LianTong_SystemCenterModel.AccountManagerTel,
+                SystemSupport = _LianTong_SystemCenterModel.SystemSupport,
+                equipmentDealerContacts = _LianTong_SystemCenterModel.equipmentDealerContacts,
+                equipmentDealerTel = _LianTong_SystemCenterModel.equipmentDealerTel,
+                adress = _LianTong_SystemCenterModel.adress,
+                contactPeople = _LianTong_SystemCenterModel.contactPeople,
+                contactWay = _LianTong_SystemCenterModel.contactWay,
+                equipmentType = _LianTong_SystemCenterModel.equipmentType,
+                equipmentDealer = _LianTong_SystemCenterModel.equipmentDealer,
+                constructionDepartment = _LianTong_SystemCenterModel.constructionDepartment,
+                contractCost = _LianTong_SystemCenterModel.contractCost,
+                equipmentCost = _LianTong_SystemCenterModel.equipmentCost,
+                projectCost = _LianTong_SystemCenterModel.projectCost,
+                Profit = (((_LianTong_SystemCenterModel.contractCost == null ? 0 : _LianTong_SystemCenterModel.contractCost) - (_LianTong_SystemCenterModel.equipmentCost == null ? 0 : _LianTong_SystemCenterModel.equipmentCost) - (_LianTong_SystemCenterModel.projectCost == null ? 0 : _LianTong_SystemCenterModel.projectCost))).ToString(),
+                ProfitRate = ProfitRate,
+                maintenanceDepartment = _LianTong_SystemCenterModel.maintenanceDepartment,
+                maintenancePeriod = _LianTong_SystemCenterModel.maintenancePeriod,
+                contractStartDate = _LianTong_SystemCenterModel.contractStartDate,
+                contractEndDate = _LianTong_SystemCenterModel.contractEndDate,
+                Comments = _LianTong_SystemCenterModel.Comments
+            };
+            return Json(json, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
 
         public ActionResult UpLoad(string Id)
         {

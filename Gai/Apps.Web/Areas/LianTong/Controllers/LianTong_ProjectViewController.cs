@@ -9,6 +9,7 @@ using Apps.BLL.Sys;
 using Apps.BLL.LianTong;
 using Apps.Models.LianTong;
 using Newtonsoft.Json;
+using System.Linq.Expressions;
 
 namespace Apps.Web.Areas.LianTong.Controllers
 {
@@ -24,19 +25,20 @@ namespace Apps.Web.Areas.LianTong.Controllers
             return View();
         }
         //[SupportFilter(ActionName = "Index")]
-        public JsonResult GetList(GridPager pager, string queryStr)
+        public JsonResult GetList(GridPager pager, string DepId, string overStatus, string projectPro, string admin, string projectManagement)
         {
-            if (string.IsNullOrEmpty(queryStr)) queryStr = "";
-            string DepId = GetAccount().DepId;
-            string QuaryCD = StructBLL.m_Rep.Find(Convert.ToInt32(DepId)).Remark;
+            string UserDepId = GetAccount().DepId;
+            string QuaryCD = StructBLL.m_Rep.Find(Convert.ToInt32(UserDepId)).Remark;
+            string RoleName = GetAccount().RoleName;
             List<LianTong_ProjectModel> list;
-            if ("*".Equals(QuaryCD))
+            if ("[超级管理员]".Equals(RoleName) || "[公司领导]".Equals(RoleName))
             {
-                list = m_BLL.m_Rep.FindPageList(ref pager, a => a.departmentName.Contains(queryStr)).ToList();
+                list = m_BLL.m_Rep.FindPageList(ref pager, p => (string.IsNullOrEmpty(DepId) || p.department == DepId) && (string.IsNullOrEmpty(overStatus) || p.overStatus == overStatus) && (string.IsNullOrEmpty(projectPro) || p.projectPro.Contains(projectPro)) && (string.IsNullOrEmpty(admin) || p.admin.Contains(admin)) && (string.IsNullOrEmpty(projectManagement) || p.department.Contains(projectManagement))).ToList();
             }
             else
             {
-                list = m_BLL.m_Rep.FindPageList(ref pager, a => a.department == DepId).ToList();
+                //***这里不同于工程创建，这里是需要显示所有的工程，包括已经被关联的。
+                list = m_BLL.m_Rep.FindPageList(ref pager, p => (p.department.Equals(UserDepId)) && (string.IsNullOrEmpty(DepId) || p.department == DepId) && (string.IsNullOrEmpty(overStatus) || p.overStatus == overStatus) && (string.IsNullOrEmpty(projectPro) || p.projectPro.Contains(projectPro)) && (string.IsNullOrEmpty(admin) || p.admin.Contains(admin)) && (string.IsNullOrEmpty(projectManagement) || p.department.Contains(projectManagement))).ToList();
             }
 
             var json = new
@@ -138,7 +140,6 @@ namespace Apps.Web.Areas.LianTong.Controllers
             List<LianTong_ProjectModel> list = m_BLL.m_Rep.FindList(a => a.contractNum == contracts.contractNum).ToList();
             return Json(list);
         }
-
 
 
     }

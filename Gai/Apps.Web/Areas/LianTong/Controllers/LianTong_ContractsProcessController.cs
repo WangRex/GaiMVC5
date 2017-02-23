@@ -43,7 +43,16 @@ namespace Apps.Web.Areas.LianTong.Controllers
         [SupportFilter]
         public ActionResult Index()
         {
-            ViewBag.CurrentStep =FlowLianTongContracts.送审.GetInt().ToString();
+
+            string RoleName = GetAccount().RoleName;
+            if ("[超级管理员]".Equals(RoleName) || "[公司领导]".Equals(RoleName) || RoleName.Contains("[工程管理部]"))
+            {
+                ViewBag.CurrentStep = FlowLianTongContracts.送审.GetInt().ToString();
+            }
+            else
+            {
+                ViewBag.CurrentStep = FlowLianTongContracts.补全.GetInt().ToString();
+            }
 
             return View();
         }
@@ -108,21 +117,18 @@ namespace Apps.Web.Areas.LianTong.Controllers
         [HttpPost]
         public JsonResult GetList(GridPager pager, string queryStr)
         {
-            if (string.IsNullOrEmpty(queryStr)) queryStr = FlowLianTongContracts.送审.GetInt().ToString();
             string DepId = GetAccount().DepId;
             string QuaryCD = StructBLL.m_Rep.Find(Convert.ToInt32(DepId)).Remark;
             string RoleName = GetAccount().RoleName;
             List<LianTong_ProjectContractsModel> list;
-            if ("[超级管理员]".Equals(RoleName))
+            if ("[超级管理员]".Equals(RoleName) || "[公司领导]".Equals(RoleName) || RoleName.Contains("[工程管理部]"))
             {
-                list = m_BLL.m_Rep.FindPageList(ref pager).ToList();
-            }
-            else if ("*".Equals(QuaryCD))
-            {
+                if (string.IsNullOrEmpty(queryStr)) queryStr = FlowLianTongContracts.送审.GetInt().ToString();
                 list = m_BLL.m_Rep.FindPageList(ref pager, a => a.history == queryStr).ToList();
             }
             else
             {
+                if (string.IsNullOrEmpty(queryStr)) queryStr = FlowLianTongContracts.补全.GetInt().ToString();
                 list = m_BLL.m_Rep.FindPageList(ref pager, a => a.department == DepId && a.history == queryStr).ToList();
             }
             foreach (LianTong_ProjectContractsModel item in list)

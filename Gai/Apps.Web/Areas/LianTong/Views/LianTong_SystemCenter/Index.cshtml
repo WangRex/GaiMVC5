@@ -16,11 +16,13 @@
     @Html.ToolButton("btnAdd", "fa fa-plus", "添加", ref perm, "Create", true)
     @Html.ToolButton("btnSave", "fa fa-save", Resource.Save, ref perm, "Save", true)
     @Html.ToolButton("btnDelete", "fa fa-trash", Resource.Delete, ref perm, "Delete", true)
+    @Html.ToolButton("btnDetails", "fa fa-list", "工程详情", ref perm, "Details", true)
     @Html.ToolButton("btnUpLoad", "fa fa-arrow-circle-o-up", "添加附件", ref perm, "UpLoad", true)
 </div>
 <div id="modalwindow" class="easyui-window" data-options="modal:true,closed:true,minimizable:false,shadow:false"></div>
 <table id="grid_list"></table>
 <div id="Pager"></div>
+
 <script type="text/javascript">
     var editRow = undefined;
     $(function () {
@@ -46,6 +48,7 @@
                 { field: 'projectArea', title: '@Html.LabelFor(model => model.projectArea)', width: 90, editor: { type: 'validatebox' } },
                 { field: 'projectType', title: '@Html.LabelFor(model => model.projectType)', width: 90, editor: { type: 'validatebox' } },
                 { field: 'AccountManager', title: '@Html.LabelFor(model => model.AccountManager)', width: 100, editor: { type: 'validatebox' } },
+                { field: 'UnicomAccount', title: '@Html.LabelFor(model => model.UnicomAccount)', width: 100, editor: { type: 'validatebox' } },
                 { field: 'AccountManagerTel', title: '@Html.LabelFor(model => model.AccountManagerTel)', width: 100, editor: { type: 'validatebox' } },
                 { field: 'SystemSupport', title: '@Html.LabelFor(model => model.SystemSupport)', width: 100, editor: { type: 'validatebox' } },
                 { field: 'equipmentDealerContacts', title: '@Html.LabelFor(model => model.equipmentDealerContacts)', width: 100, editor: { type: 'validatebox' } },
@@ -60,7 +63,7 @@
                 { field: 'equipmentCost', title: '@Html.LabelFor(model => model.equipmentCost)', width: 90, editor: { type: 'numberbox' } },
                 { field: 'projectCost', title: '@Html.LabelFor(model => model.projectCost)', width: 90, editor: { type: 'numberbox' } },
                 { field: 'Profit', title: '利润', width: 90 },
-                { field: 'ProfitRate', title: '利润率', width: 90},
+                { field: 'ProfitRate', title: '利润率', width: 90, formatter: function (value, row, index) { return (value * 100) + " %"; } },
                 { field: 'maintenanceDepartment', title: '@Html.LabelFor(model => model.maintenanceDepartment)', width: 90, editor: { type: 'validatebox' } },
                 { field: 'maintenancePeriod', title: '@Html.LabelFor(model => model.maintenancePeriod)', width: 90, editor: { type: 'validatebox' } },
                 { field: 'contractStartDate', title: '@Html.LabelFor(model => model.contractStartDate)', width: 100, sortable: true, editor: { type: 'datebox' } },
@@ -185,8 +188,7 @@
                                 $("#grid_list").datagrid('load');
                                 $.messageBox5s('@Resource.Tip', data.message);
                             }
-                            else
-                            {
+                            else {
                                 $.messageBox5s('@Resource.Tip', data.message);
                             }
 
@@ -194,7 +196,7 @@
 
                     }
                 });
-            } else {$.messageBox5s('@Resource.Tip','@Resource.PlaseChooseToOperatingRecords'); }
+            } else { $.messageBox5s('@Resource.Tip', '@Resource.PlaseChooseToOperatingRecords'); }
         });
         $("#btnSave").click(function () {
             $("#grid_list").datagrid('endEdit', editRow);
@@ -221,6 +223,13 @@
                 $("#grid_list").datagrid('beginEdit', 0);
                 editRow = 0;
             }
+        });
+        $("#btnDetails").click(function () {
+            var row = $('#grid_list').datagrid('getSelected');
+            if (row != null) {
+                $("#modalwindow").html("<iframe width='100%' height='100%' scrolling='auto' frameborder='0' src='/LianTong/LianTong_SystemCenter/Details?ProjectId=" + row.Id + "&Iedate=" + GetGuid() + "'></iframe>");
+                $("#modalwindow").window({ title: '@Resource.Details', width: 720, height: 400, iconCls: 'fa fa-list' }).window('open');
+            } else { $.messageBox5s('@Resource.Tip', '@Resource.PlaseChooseToOperatingRecords'); }
         });
         $("#btnUpLoad").click(function () {
             var row = $('#grid_list').datagrid('getSelected');
