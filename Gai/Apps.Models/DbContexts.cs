@@ -82,6 +82,7 @@ namespace Apps.Models
         public DbSet<LianTong_ProjectContractsModel> LianTong_ProjectContractsModel { get; set; }
         public DbSet<LianTong_ProjectModel> LianTong_ProjectModel { get; set; }
         public DbSet<LianTong_SystemCenterModel> LianTong_SystemCenterModel { get; set; }
+        public DbSet<LianTong_SystemCenterFinancialModel> LianTong_SystemCenterFinancialModel { get; set; }
 
         public DbSet<Task> Task { get; set; }
 
