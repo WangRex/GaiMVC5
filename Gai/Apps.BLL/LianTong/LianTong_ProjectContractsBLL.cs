@@ -100,5 +100,12 @@ namespace Apps.BLL.LianTong
             RefList.Add("TotalC", TotalC);
             return RefList;
         }
+
+        //修改合同可编辑状态
+        public void UpdateContractDisable(int Id)
+        {
+            LianTong_ProjectContractsModel _LianTong_ProjectContractsModel = m_Rep.Find(Id);
+            _LianTong_ProjectContractsModel.disable = 1;
+        }
     }
 }

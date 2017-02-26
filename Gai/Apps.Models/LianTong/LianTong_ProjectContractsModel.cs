@@ -5,7 +5,7 @@ namespace Apps.Models.LianTong
 {
 
     /// <summary>
-    /// 约战模型
+    /// 合同模型
     /// </summary>
     public class LianTong_ProjectContractsModel
     {
@@ -93,8 +93,14 @@ namespace Apps.Models.LianTong
         [Display(Name = "流程状态")]
         public string history { get; set; }
 
+        [Display(Name = "历史记录")]
+        public string historyRecord { get; set; }
+
         [Display(Name = "合同状态")]
         public string status { get; set; }
+
+        [Display(Name = "合同编辑状态")]
+        public int disable { get; set; }
 
     }
 

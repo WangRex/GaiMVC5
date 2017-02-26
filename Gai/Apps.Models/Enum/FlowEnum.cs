@@ -64,7 +64,11 @@ namespace Apps.Models.Enum
         /// <summary>
         /// 紧急
         /// </summary>
-        Urgent =3
+        Urgent = 3,
+        /// <summary>
+        /// 未通过
+        /// </summary>
+        NotPass = 4
 
 
     }
